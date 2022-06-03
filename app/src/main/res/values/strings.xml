@@ -1,0 +1,40 @@
+<resources>
+    <string name="appName">Customer Base</string>
+
+    <string name="titleHomeScreen">customers</string>
+    <string name="titleAddCustomerScreen">add customer</string>
+    <string name="titleEditCustomerScreen">edit customer</string>
+    <string name="titleSettingsScreen">settings</string>
+
+    <string name="openMenu">open menu</string>
+    <string name="navigateBack">navigate back</string>
+
+    <string name="settings">settings</string>
+
+    <string name="loading">loading…</string>
+    <string name="nothingToShow">nothing to show yet…</string>
+
+    <string name="firstName">first name</string>
+    <string name="lastName">last name</string>
+    <string name="status">status</string>
+    <string name="addedAt">added at</string>
+
+    <string name="labelFirstName">first name</string>
+    <string name="labelLastName">last name</string>
+
+    <string name="placeholderFirstName">customer\'s first name</string>
+    <string name="placeholderLastName">customer\'s last name</string>
+
+    <string name="errorFirstNameEmpty">first name can\'t be empty</string>
+    <string name="errorLastNameEmpty">last name can\'t be empty</string>
+
+    <string name="active">active</string>
+    <string name="inactive">inactive</string>
+
+    <string name="finish">finish</string>
+    <string name="cancel">cancel</string>
+
+    <string name="switchAppThemeToDark">switch theme to dark</string>
+    <string name="switchAppThemeToLight">switch theme to light</string>
+
+</resources>
