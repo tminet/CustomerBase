@@ -63,7 +63,7 @@ private fun NavGraphBuilder.settingsScreen(
     route = ScreenRouteType.Settings.route
 ) {
     SettingsScreen(
-        onNavBackToHomeScreen = {
+        navBackToHomeScreen = {
             navController.popBackStack()
         }
     )

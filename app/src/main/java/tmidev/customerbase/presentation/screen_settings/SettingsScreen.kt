@@ -34,7 +34,7 @@ import tmidev.customerbase.presentation.common.theme.spacing
 
 @Composable
 fun SettingsScreen(
-    onNavBackToHomeScreen: () -> Unit,
+    navBackToHomeScreen: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state
@@ -50,7 +50,7 @@ fun SettingsScreen(
     LaunchedEffect(key1 = LocalContext.current) {
         viewModel.channel.collect { channel ->
             when (channel) {
-                is SettingsChannel.NavBackToHomeScreen -> onNavBackToHomeScreen()
+                is SettingsChannel.NavBackToHomeScreen -> navBackToHomeScreen()
             }
         }
     }

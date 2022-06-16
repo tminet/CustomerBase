@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import tmidev.customerbase.R
 
 data class AddEditCustomerState(
-    val isLoading: Boolean = true,
     val id: Int = 0,
     val firstName: String = "",
     val lastName: String = "",

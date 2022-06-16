@@ -30,20 +30,20 @@ class HomeViewModel @Inject constructor(
         when (action) {
             is HomeAction.OpenDrawer -> openDrawer()
             is HomeAction.NavToSettingsScreen -> navToSettingsScreen()
-            is HomeAction.NavToAddEditCustomerScreen -> navToAddEditCustomerScreen(
-                customerId = action.customerId
-            )
-            is HomeAction.DeleteCustomer -> deleteCustomer(
-                customer = action.customer
-            )
+            is HomeAction.NavToAddEditCustomerScreen -> {
+                navToAddEditCustomerScreen(customerId = action.customerId)
+            }
+            is HomeAction.DeleteCustomer -> {
+                deleteCustomer(customer = action.customer)
+            }
         }
     }
 
     private fun getCustomers(query: String = "") = viewModelScope.launch {
-        customersDataSource.getAll(query).collectLatest {
+        customersDataSource.getAll(query).collectLatest { customers ->
             state.value = state.value.copy(
                 isLoading = false,
-                customers = it
+                customers = customers
             )
         }
     }

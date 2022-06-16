@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import tmidev.core.data.source.local.CustomersDataSource
@@ -37,15 +37,15 @@ class AddEditCustomerViewModel @Inject constructor(
         when (action) {
             AddEditCustomerAction.NavBackToHomeScreen -> navBackToHomeScreen()
             is AddEditCustomerAction.SaveCustomer -> saveCustomer()
-            is AddEditCustomerAction.FirstNameChanged -> state.value = state.value.copy(
-                firstName = action.firstName
-            )
-            is AddEditCustomerAction.LastNameChanged -> state.value = state.value.copy(
-                lastName = action.lastName
-            )
-            is AddEditCustomerAction.IsActiveChanged -> state.value = state.value.copy(
-                isActive = action.isActive
-            )
+            is AddEditCustomerAction.FirstNameChanged -> {
+                state.value = state.value.copy(firstName = action.firstName)
+            }
+            is AddEditCustomerAction.LastNameChanged -> {
+                state.value = state.value.copy(lastName = action.lastName)
+            }
+            is AddEditCustomerAction.IsActiveChanged -> {
+                state.value = state.value.copy(isActive = action.isActive)
+            }
         }
     }
 
@@ -53,17 +53,16 @@ class AddEditCustomerViewModel @Inject constructor(
         savedStateHandle.get<String>(ConstantsScreenKey.ADD_EDIT_CUSTOMER_ID)
             ?.toIntOrNull()
             ?.let { customerId ->
-                customersDataSource.getById(customerId = customerId).collectLatest {
-                    state.value = state.value.copy(
-                        isLoading = false,
-                        id = it.id,
-                        firstName = it.firstName,
-                        lastName = it.lastName,
-                        isActive = it.isActive,
-                        addedAt = it.addedAt,
-                        screenTitle = R.string.titleEditCustomerScreen
-                    )
-                }
+                val customer = customersDataSource.getById(customerId = customerId).first()
+
+                state.value = state.value.copy(
+                    id = customer.id,
+                    firstName = customer.firstName,
+                    lastName = customer.lastName,
+                    isActive = customer.isActive,
+                    addedAt = customer.addedAt,
+                    screenTitle = R.string.titleEditCustomerScreen
+                )
             }
     }
 

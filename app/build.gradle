@@ -41,6 +41,7 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += '-opt-in=kotlin.RequiresOptIn'
     }
 
     buildFeatures {
@@ -87,4 +88,5 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_ver"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ver"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ver"
 }

@@ -1,12 +1,14 @@
 package tmidev.customerbase.presentation.screen_home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -138,17 +140,21 @@ fun HomeScreen(
 }
 
 @Composable
-private fun ColumnScope.ComposeLoading(
+private fun ComposeLoading(
     isLoading: Boolean
 ) = AnimatedVisibility(
     modifier = Modifier.fillMaxWidth(),
-    visible = isLoading
+    visible = isLoading,
+    enter = expandVertically(animationSpec = tween()),
+    exit = shrinkVertically(animationSpec = tween())
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+        Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.small))
 
         Text(
             text = stringResource(id = R.string.loading),
@@ -161,11 +167,13 @@ private fun ColumnScope.ComposeLoading(
 }
 
 @Composable
-private fun ColumnScope.ComposeEmptyMessage(
+private fun ComposeEmptyMessage(
     isEmpty: Boolean
 ) = AnimatedVisibility(
     modifier = Modifier.fillMaxWidth(),
-    visible = isEmpty
+    visible = isEmpty,
+    enter = expandVertically(animationSpec = tween()),
+    exit = shrinkVertically(animationSpec = tween())
 ) {
     Column(
         modifier = Modifier
