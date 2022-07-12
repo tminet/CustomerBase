@@ -40,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -54,7 +53,9 @@ import tmidev.customerbase.presentation.common.AppFloatingActionButton
 import tmidev.customerbase.presentation.common.AppTextWithLabel
 import tmidev.customerbase.presentation.common.AppTopBarWithDrawer
 import tmidev.customerbase.presentation.common.MenuItem
+import tmidev.customerbase.presentation.common.theme.activeColor
 import tmidev.customerbase.presentation.common.theme.elevating
+import tmidev.customerbase.presentation.common.theme.inactiveColor
 import tmidev.customerbase.presentation.common.theme.spacing
 import tmidev.customerbase.util.toFormattedDate
 
@@ -255,7 +256,10 @@ private fun LazyItemScope.ComposeCustomerCard(
                 modifier = Modifier
                     .size(size = MaterialTheme.spacing.medium)
                     .clip(shape = CircleShape)
-                    .background(color = if (customer.isActive) Color.Green else Color.Red)
+                    .background(
+                        color = if (customer.isActive)
+                            MaterialTheme.colors.activeColor else MaterialTheme.colors.inactiveColor
+                    )
             )
         }
 

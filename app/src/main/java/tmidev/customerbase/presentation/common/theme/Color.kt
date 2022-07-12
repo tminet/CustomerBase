@@ -1,5 +1,6 @@
 package tmidev.customerbase.presentation.common.theme
 
+import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
 
 val PrimaryLightColor = Color(color = 0xFF009688)
@@ -27,3 +28,9 @@ val SurfaceDarkColor = Color(color = 0xFF272629)
 val OnSurfaceDarkColor = Color(color = 0xFFE7E1E5)
 val ErrorDarkColor = Color(color = 0xFFF44336)
 val OnErrorDarkColor = Color(color = 0xFFE7E1E5)
+
+val Colors.activeColor
+    get() = if (isLight) Color(color = 0xFF00695C) else Color(color = 0xFF26A69A)
+
+val Colors.inactiveColor
+    get() = if (isLight) Color(color = 0xFFC62828) else Color(color = 0xFFEF5350)
