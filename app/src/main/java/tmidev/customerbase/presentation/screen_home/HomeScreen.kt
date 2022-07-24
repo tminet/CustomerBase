@@ -114,7 +114,7 @@ fun HomeScreen(
                 ),
                 onClick = {
                     when (it.id) {
-                        "settings" -> navToSettingsScreen()
+                        "settings" -> viewModel.onAction(action = HomeAction.NavToSettingsScreen)
                     }
                 }
             )
