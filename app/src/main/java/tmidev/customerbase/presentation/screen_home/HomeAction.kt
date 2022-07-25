@@ -7,4 +7,5 @@ sealed class HomeAction {
     object NavToSettingsScreen : HomeAction()
     data class NavToAddEditCustomerScreen(val customerId: Int? = null) : HomeAction()
     data class DeleteCustomer(val customer: Customer) : HomeAction()
+    data class QueryChanged(val query: String) : HomeAction()
 }

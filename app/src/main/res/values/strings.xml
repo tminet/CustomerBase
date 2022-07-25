@@ -19,9 +19,11 @@
     <string name="status">status</string>
     <string name="addedAt">added at</string>
 
+    <string name="labelSearch">search</string>
     <string name="labelFirstName">first name</string>
     <string name="labelLastName">last name</string>
 
+    <string name="placeholderSearch">enter customer name</string>
     <string name="placeholderFirstName">customer\'s first name</string>
     <string name="placeholderLastName">customer\'s last name</string>
 

@@ -21,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -40,9 +42,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import tmidev.core.domain.model.Customer
@@ -50,6 +57,7 @@ import tmidev.customerbase.R
 import tmidev.customerbase.presentation.common.AppDrawerHeader
 import tmidev.customerbase.presentation.common.AppDrawerMenu
 import tmidev.customerbase.presentation.common.AppFloatingActionButton
+import tmidev.customerbase.presentation.common.AppOutlinedTextField
 import tmidev.customerbase.presentation.common.AppTextWithLabel
 import tmidev.customerbase.presentation.common.AppTopBarWithDrawer
 import tmidev.customerbase.presentation.common.MenuItem
@@ -123,6 +131,10 @@ fun HomeScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             ComposeLoading(isLoading = state.isLoading)
 
+            ComposeSearchField(query = state.query) { query ->
+                viewModel.onAction(action = HomeAction.QueryChanged(query = query))
+            }
+
             ComposeEmptyMessage(isEmpty = state.customers.isEmpty())
 
             ComposeCustomersList(
@@ -162,9 +174,36 @@ private fun ComposeLoading(
             color = MaterialTheme.colors.onBackground,
             style = MaterialTheme.typography.body2
         )
-
-        Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.medium))
     }
+}
+
+@Composable
+private fun ComposeSearchField(
+    focusManager: FocusManager = LocalFocusManager.current,
+    query: String,
+    onQueryChanged: (String) -> Unit
+) = Column(modifier = Modifier.fillMaxWidth()) {
+    Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.small))
+
+    AppOutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.spacing.medium),
+        value = query,
+        onValueChange = { onQueryChanged(it) },
+        labelRes = R.string.labelSearch,
+        placeholderRes = R.string.placeholderSearch,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Words,
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                focusManager.clearFocus()
+            }
+        )
+    )
 }
 
 @Composable

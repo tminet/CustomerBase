@@ -14,8 +14,7 @@ interface CustomerDao {
         value = """
             SELECT * 
             FROM ${ConstantsRoom.TABLE_CUSTOMER}
-            WHERE LOWER(firstName) LIKE '%' || LOWER(:query) || '%'
-            OR LOWER(lastName) LIKE '%' || LOWER(:query) || '%'
+            WHERE LOWER(firstName) || ' ' || LOWER(lastName) LIKE '%' || LOWER(:query) || '%'
             ORDER BY addedAt
         """
     )

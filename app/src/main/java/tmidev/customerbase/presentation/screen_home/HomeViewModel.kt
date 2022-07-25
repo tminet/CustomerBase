@@ -4,8 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import tmidev.core.data.source.local.CustomersDataSource
@@ -18,6 +21,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     var state = mutableStateOf(value = HomeState())
         private set
+
+    private val searchQuery = MutableStateFlow(value = state.value.query)
 
     private val _channel = Channel<HomeChannel>()
     val channel = _channel.receiveAsFlow()
@@ -36,11 +41,15 @@ class HomeViewModel @Inject constructor(
             is HomeAction.DeleteCustomer -> {
                 deleteCustomer(customer = action.customer)
             }
+            is HomeAction.QueryChanged -> updateSearchQuery(query = action.query)
         }
     }
 
-    private fun getCustomers(query: String = "") = viewModelScope.launch {
-        customersDataSource.getAll(query).collectLatest { customers ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCustomers() = viewModelScope.launch {
+        searchQuery.flatMapLatest { query ->
+            customersDataSource.getAll(query = query)
+        }.collectLatest { customers ->
             state.value = state.value.copy(
                 isLoading = false,
                 customers = customers
@@ -62,5 +71,10 @@ class HomeViewModel @Inject constructor(
 
     private fun deleteCustomer(customer: Customer) = viewModelScope.launch {
         customersDataSource.delete(customer = customer)
+    }
+
+    private fun updateSearchQuery(query: String) {
+        state.value = state.value.copy(query = query)
+        searchQuery.value = query
     }
 }
