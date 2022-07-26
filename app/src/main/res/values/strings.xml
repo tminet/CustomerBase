@@ -11,6 +11,8 @@
 
     <string name="settings">settings</string>
 
+    <string name="sortOrder">sort order</string>
+
     <string name="loading">loading…</string>
     <string name="nothingToShow">nothing to show yet…</string>
 

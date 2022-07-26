@@ -11,8 +11,8 @@ import javax.inject.Inject
 class CustomersDataSourceImpl @Inject constructor(
     private val customerDao: CustomerDao
 ) : CustomersDataSource {
-    override fun getAll(query: String): Flow<List<Customer>> =
-        customerDao.getAll(query = query).map { it.toCustomers() }
+    override fun getAll(query: String, isAscending: Boolean): Flow<List<Customer>> =
+        customerDao.getAll(query = query, isAscending = isAscending).map { it.toCustomers() }
 
     override fun getById(customerId: Int): Flow<Customer> =
         customerDao.getById(customerId = customerId).map { it.toCustomer() }

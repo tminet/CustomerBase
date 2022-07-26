@@ -8,15 +8,18 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import tmidev.core.data.source.local.CustomersDataSource
+import tmidev.core.data.source.local.UserPreferencesDataSource
 import tmidev.core.domain.model.Customer
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val userPreferencesDataSource: UserPreferencesDataSource,
     private val customersDataSource: CustomersDataSource
 ) : ViewModel() {
     var state = mutableStateOf(value = HomeState())
@@ -35,6 +38,7 @@ class HomeViewModel @Inject constructor(
         when (action) {
             is HomeAction.OpenDrawer -> openDrawer()
             is HomeAction.NavToSettingsScreen -> navToSettingsScreen()
+            is HomeAction.SwitchListOrder -> switchListOrder()
             is HomeAction.NavToAddEditCustomerScreen -> {
                 navToAddEditCustomerScreen(customerId = action.customerId)
             }
@@ -47,8 +51,10 @@ class HomeViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCustomers() = viewModelScope.launch {
-        searchQuery.flatMapLatest { query ->
-            customersDataSource.getAll(query = query)
+        combine(searchQuery, userPreferencesDataSource.isOrderListAscending) { query, isAscending ->
+            query to isAscending
+        }.flatMapLatest { (query, isAscending) ->
+            customersDataSource.getAll(query = query, isAscending = isAscending)
         }.collectLatest { customers ->
             state.value = state.value.copy(
                 isLoading = false,
@@ -71,6 +77,10 @@ class HomeViewModel @Inject constructor(
 
     private fun deleteCustomer(customer: Customer) = viewModelScope.launch {
         customersDataSource.delete(customer = customer)
+    }
+
+    private fun switchListOrder() = viewModelScope.launch {
+        userPreferencesDataSource.switchOrderList()
     }
 
     private fun updateSearchQuery(query: String) {

@@ -10,15 +10,31 @@ import tmidev.core.util.ConstantsRoom
 
 @Dao
 interface CustomerDao {
+    fun getAll(
+        query: String,
+        isAscending: Boolean
+    ): Flow<List<CustomerEntity>> = if (isAscending)
+        getAllAscending(query = query) else getAllDescending(query = query)
+
     @Query(
         value = """
             SELECT * 
             FROM ${ConstantsRoom.TABLE_CUSTOMER}
             WHERE LOWER(firstName) || ' ' || LOWER(lastName) LIKE '%' || LOWER(:query) || '%'
-            ORDER BY addedAt
+            ORDER BY addedAt ASC
         """
     )
-    fun getAll(query: String): Flow<List<CustomerEntity>>
+    fun getAllAscending(query: String): Flow<List<CustomerEntity>>
+
+    @Query(
+        value = """
+            SELECT * 
+            FROM ${ConstantsRoom.TABLE_CUSTOMER}
+            WHERE LOWER(firstName) || ' ' || LOWER(lastName) LIKE '%' || LOWER(:query) || '%'
+            ORDER BY addedAt DESC
+        """
+    )
+    fun getAllDescending(query: String): Flow<List<CustomerEntity>>
 
     @Query(
         value = """

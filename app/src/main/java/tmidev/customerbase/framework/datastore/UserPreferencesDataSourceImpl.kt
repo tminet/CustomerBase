@@ -26,13 +26,30 @@ class UserPreferencesDataSourceImpl @Inject constructor(
             preferences[PreferencesKeys.IS_APP_THEME_DARK_MODE]
         }
 
+    override val isOrderListAscending: Flow<Boolean> = dataStore.data
+        .catch { exception ->
+            exception.localizedMessage?.let { Log.e(tag, it) }
+            emit(emptyPreferences())
+        }
+        .map { preferences ->
+            preferences[PreferencesKeys.IS_ORDER_LIST_ASCENDING] ?: true
+        }
+
     override suspend fun updateAppTheme(darkMode: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.IS_APP_THEME_DARK_MODE] = darkMode
         }
     }
 
+    override suspend fun switchOrderList() {
+        dataStore.edit { preferences ->
+            val currentValue = preferences[PreferencesKeys.IS_ORDER_LIST_ASCENDING] ?: true
+            preferences[PreferencesKeys.IS_ORDER_LIST_ASCENDING] = !currentValue
+        }
+    }
+
     private object PreferencesKeys {
         val IS_APP_THEME_DARK_MODE = booleanPreferencesKey(name = "is_app_theme_dark_mode")
+        val IS_ORDER_LIST_ASCENDING = booleanPreferencesKey(name = "is_order_list_ascending")
     }
 }

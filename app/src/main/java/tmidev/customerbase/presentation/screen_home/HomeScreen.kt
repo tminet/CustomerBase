@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -131,9 +133,15 @@ fun HomeScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             ComposeLoading(isLoading = state.isLoading)
 
-            ComposeSearchField(query = state.query) { query ->
-                viewModel.onAction(action = HomeAction.QueryChanged(query = query))
-            }
+            ComposeSearchField(
+                query = state.query,
+                onQueryChanged = { query ->
+                    viewModel.onAction(action = HomeAction.QueryChanged(query = query))
+                },
+                onSwitchListClick = {
+                    viewModel.onAction(action = HomeAction.SwitchListOrder)
+                }
+            )
 
             ComposeEmptyMessage(isEmpty = state.customers.isEmpty())
 
@@ -181,29 +189,45 @@ private fun ComposeLoading(
 private fun ComposeSearchField(
     focusManager: FocusManager = LocalFocusManager.current,
     query: String,
-    onQueryChanged: (String) -> Unit
+    onQueryChanged: (String) -> Unit,
+    onSwitchListClick: () -> Unit
 ) = Column(modifier = Modifier.fillMaxWidth()) {
     Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.small))
 
-    AppOutlinedTextField(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = MaterialTheme.spacing.medium),
-        value = query,
-        onValueChange = { onQueryChanged(it) },
-        labelRes = R.string.labelSearch,
-        placeholderRes = R.string.placeholderSearch,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Words,
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                focusManager.clearFocus()
-            }
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AppOutlinedTextField(
+            modifier = Modifier.weight(weight = 1F),
+            value = query,
+            onValueChange = { onQueryChanged(it) },
+            labelRes = R.string.labelSearch,
+            placeholderRes = R.string.placeholderSearch,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    focusManager.clearFocus()
+                }
+            )
         )
-    )
+
+        Spacer(modifier = Modifier.width(width = MaterialTheme.spacing.small))
+
+        IconButton(onClick = onSwitchListClick) {
+            Icon(
+                imageVector = Icons.Rounded.Sort,
+                contentDescription = stringResource(id = R.string.sortOrder),
+                tint = MaterialTheme.colors.onBackground
+            )
+        }
+    }
 }
 
 @Composable
