@@ -1,44 +1,44 @@
 <resources>
     <string name="appName">Customer Base</string>
 
-    <string name="titleHomeScreen">customers</string>
-    <string name="titleAddCustomerScreen">add customer</string>
-    <string name="titleEditCustomerScreen">edit customer</string>
-    <string name="titleSettingsScreen">settings</string>
+    <string name="titleHomeScreen">Customers</string>
+    <string name="titleAddCustomerScreen">Add customer</string>
+    <string name="titleEditCustomerScreen">Edit customer</string>
+    <string name="titleSettingsScreen">Settings</string>
 
-    <string name="openMenu">open menu</string>
-    <string name="navigateBack">navigate back</string>
+    <string name="openMenu">Open menu</string>
+    <string name="navigateBack">Navigate back</string>
 
-    <string name="settings">settings</string>
+    <string name="settings">Settings</string>
 
-    <string name="sortOrder">sort order</string>
+    <string name="sortOrder">Sort order</string>
 
-    <string name="loading">loading…</string>
-    <string name="nothingToShow">nothing to show yet…</string>
+    <string name="loading">Loading…</string>
+    <string name="nothingToShow">Nothing to show yet…</string>
 
-    <string name="firstName">first name</string>
-    <string name="lastName">last name</string>
-    <string name="status">status</string>
-    <string name="addedAt">added at</string>
+    <string name="firstName">First name</string>
+    <string name="lastName">Last name</string>
+    <string name="status">Status</string>
+    <string name="addedAt">Added at</string>
 
-    <string name="labelSearch">search</string>
-    <string name="labelFirstName">first name</string>
-    <string name="labelLastName">last name</string>
+    <string name="labelSearch">Search</string>
+    <string name="labelFirstName">First name</string>
+    <string name="labelLastName">Last name</string>
 
-    <string name="placeholderSearch">enter customer name</string>
-    <string name="placeholderFirstName">customer\'s first name</string>
-    <string name="placeholderLastName">customer\'s last name</string>
+    <string name="placeholderSearch">Enter customer name</string>
+    <string name="placeholderFirstName">Customer\'s first name</string>
+    <string name="placeholderLastName">Customer\'s last name</string>
 
-    <string name="errorFirstNameEmpty">first name can\'t be empty</string>
-    <string name="errorLastNameEmpty">last name can\'t be empty</string>
+    <string name="errorFirstNameEmpty">First name can\'t be empty</string>
+    <string name="errorLastNameEmpty">Last name can\'t be empty</string>
 
-    <string name="active">active</string>
-    <string name="inactive">inactive</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
 
-    <string name="finish">finish</string>
-    <string name="cancel">cancel</string>
+    <string name="finish">Finish</string>
+    <string name="cancel">Cancel</string>
 
-    <string name="switchAppThemeToDark">switch theme to dark</string>
-    <string name="switchAppThemeToLight">switch theme to light</string>
+    <string name="switchAppThemeToDark">Switch theme to dark</string>
+    <string name="switchAppThemeToLight">Switch theme to light</string>
 
 </resources>
