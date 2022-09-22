@@ -21,11 +21,11 @@ import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import tmidev.customerbase.R
@@ -37,17 +37,17 @@ fun SettingsScreen(
     navBackToHomeScreen: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state
+    val state by viewModel.screenState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberScrollState()
 
-    val isAppThemeDarkMode = state.isAppThemeDarkMode ?: isSystemInDarkTheme()
+    val isThemeDarkMode = state.isAppThemeDarkMode ?: isSystemInDarkTheme()
 
-    val themeInfoState = if (isAppThemeDarkMode)
-        Icons.Rounded.LightMode to stringResource(id = R.string.switchAppThemeToLight)
-    else Icons.Rounded.DarkMode to stringResource(id = R.string.switchAppThemeToDark)
+    val themeIconState =
+        if (isThemeDarkMode) Icons.Rounded.LightMode to stringResource(id = R.string.switchAppThemeToLight)
+        else Icons.Rounded.DarkMode to stringResource(id = R.string.switchAppThemeToDark)
 
-    LaunchedEffect(key1 = LocalContext.current) {
+    LaunchedEffect(key1 = Unit) {
         viewModel.channel.collect { channel ->
             when (channel) {
                 is SettingsChannel.NavBackToHomeScreen -> navBackToHomeScreen()
@@ -60,22 +60,21 @@ fun SettingsScreen(
         scaffoldState = scaffoldState,
         topBar = {
             AppTopBarWithBack(title = R.string.settings) {
-                viewModel.onAction(action = SettingsAction.NavBackToHomeScreen)
+                viewModel.navBackToHomeScreen()
             }
         }
-    ) {
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues = innerPadding)
                 .verticalScroll(state = scrollState)
         ) {
             ComposeSwitchTheme(
-                currentThemeIcon = themeInfoState.first,
-                currentThemeName = themeInfoState.second
+                currentThemeIcon = themeIconState.first,
+                currentThemeName = themeIconState.second
             ) {
-                viewModel.onAction(
-                    action = SettingsAction.AppThemeChanged(isDarkTheme = !isAppThemeDarkMode)
-                )
+                viewModel.updateAppTheme(currentMode = isThemeDarkMode)
             }
         }
     }

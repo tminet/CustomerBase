@@ -20,10 +20,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -41,11 +41,11 @@ fun AddEditCustomerScreen(
     navBackToHomeScreen: () -> Unit,
     viewModel: AddEditCustomerViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state
+    val state by viewModel.screenState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(key1 = LocalContext.current) {
+    LaunchedEffect(key1 = Unit) {
         viewModel.channel.collect { channel ->
             when (channel) {
                 AddEditCustomerChannel.NavBackToHomeScreen -> navBackToHomeScreen()
@@ -58,13 +58,14 @@ fun AddEditCustomerScreen(
         scaffoldState = scaffoldState,
         topBar = {
             AppTopBarWithBack(title = state.screenTitle) {
-                viewModel.onAction(action = AddEditCustomerAction.NavBackToHomeScreen)
+                viewModel.navBackToHomeScreen()
             }
         }
-    ) {
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues = innerPadding)
                 .verticalScroll(state = scrollState)
         ) {
             Column(
@@ -75,11 +76,7 @@ fun AddEditCustomerScreen(
                 AppOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.firstName,
-                    onValueChange = {
-                        viewModel.onAction(
-                            action = AddEditCustomerAction.FirstNameChanged(firstName = it)
-                        )
-                    },
+                    onValueChange = { viewModel.changeFirstName(value = it) },
                     labelRes = R.string.labelFirstName,
                     placeholderRes = R.string.placeholderFirstName,
                     errorRes = state.firstNameError,
@@ -95,11 +92,7 @@ fun AddEditCustomerScreen(
                 AppOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.lastName,
-                    onValueChange = {
-                        viewModel.onAction(
-                            action = AddEditCustomerAction.LastNameChanged(lastName = it)
-                        )
-                    },
+                    onValueChange = { viewModel.changeLastName(value = it) },
                     labelRes = R.string.labelLastName,
                     placeholderRes = R.string.placeholderLastName,
                     errorRes = state.lastNameError,
@@ -109,9 +102,7 @@ fun AddEditCustomerScreen(
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = {
-                            viewModel.onAction(action = AddEditCustomerAction.SaveCustomer)
-                        }
+                        onDone = { viewModel.saveCustomer() }
                     )
                 )
 
@@ -131,11 +122,7 @@ fun AddEditCustomerScreen(
 
                     Switch(
                         checked = state.isActive,
-                        onCheckedChange = {
-                            viewModel.onAction(
-                                action = AddEditCustomerAction.IsActiveChanged(isActive = it)
-                            )
-                        }
+                        onCheckedChange = { viewModel.changeIsActive(value = it) }
                     )
                 }
 
@@ -147,13 +134,13 @@ fun AddEditCustomerScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AppButtonOutlined(stringRes = R.string.cancel) {
-                        viewModel.onAction(action = AddEditCustomerAction.NavBackToHomeScreen)
+                        viewModel.navBackToHomeScreen()
                     }
 
                     Spacer(modifier = Modifier.width(width = MaterialTheme.spacing.medium))
 
                     AppButton(stringRes = R.string.finish) {
-                        viewModel.onAction(action = AddEditCustomerAction.SaveCustomer)
+                        viewModel.saveCustomer()
                     }
                 }
             }

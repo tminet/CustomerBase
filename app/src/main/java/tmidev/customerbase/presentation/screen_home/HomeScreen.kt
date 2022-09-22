@@ -40,13 +40,13 @@ import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -75,10 +75,10 @@ fun HomeScreen(
     navToSettingsScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state
+    val state by viewModel.screenState.collectAsState()
     val scaffoldState = rememberScaffoldState()
 
-    LaunchedEffect(key1 = LocalContext.current) {
+    LaunchedEffect(key1 = Unit) {
         viewModel.channel.collect { channel ->
             when (channel) {
                 is HomeChannel.OpenDrawer -> scaffoldState.drawerState.open()
@@ -95,13 +95,13 @@ fun HomeScreen(
         scaffoldState = scaffoldState,
         topBar = {
             AppTopBarWithDrawer(title = R.string.titleHomeScreen) {
-                viewModel.onAction(action = HomeAction.OpenDrawer)
+                viewModel.openDrawer()
             }
         },
         floatingActionButton = {
             AppFloatingActionButton(
                 onClick = {
-                    viewModel.onAction(action = HomeAction.NavToAddEditCustomerScreen())
+                    viewModel.navToAddEditCustomerScreen(customerId = null)
                 },
                 icon = Icons.Rounded.Add
             )
@@ -124,22 +124,26 @@ fun HomeScreen(
                 ),
                 onClick = {
                     when (it.id) {
-                        "settings" -> viewModel.onAction(action = HomeAction.NavToSettingsScreen)
+                        "settings" -> viewModel.navToSettingsScreen()
                     }
                 }
             )
         }
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = innerPadding)
+        ) {
             ComposeLoading(isLoading = state.isLoading)
 
             ComposeSearchField(
                 query = state.query,
                 onQueryChanged = { query ->
-                    viewModel.onAction(action = HomeAction.QueryChanged(query = query))
+                    viewModel.updateSearchQuery(query = query)
                 },
                 onSwitchListClick = {
-                    viewModel.onAction(action = HomeAction.SwitchListOrder)
+                    viewModel.switchListOrder()
                 }
             )
 
@@ -148,12 +152,10 @@ fun HomeScreen(
             ComposeCustomersList(
                 customers = state.customers,
                 onEditCustomer = { customerId ->
-                    viewModel.onAction(
-                        action = HomeAction.NavToAddEditCustomerScreen(customerId = customerId)
-                    )
+                    viewModel.navToAddEditCustomerScreen(customerId = customerId)
                 },
                 onDeleteCustomer = { customer ->
-                    viewModel.onAction(action = HomeAction.DeleteCustomer(customer = customer))
+                    viewModel.deleteCustomer(customer = customer)
                 }
             )
         }
@@ -260,8 +262,8 @@ private fun ComposeCustomersList(
     onDeleteCustomer: (Customer) -> Unit
 ) = LazyColumn(
     modifier = Modifier.fillMaxWidth(),
-    contentPadding = PaddingValues(MaterialTheme.spacing.medium),
-    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+    contentPadding = PaddingValues(all = MaterialTheme.spacing.medium),
+    verticalArrangement = Arrangement.spacedBy(space = MaterialTheme.spacing.medium)
 ) {
     items(
         items = customers,

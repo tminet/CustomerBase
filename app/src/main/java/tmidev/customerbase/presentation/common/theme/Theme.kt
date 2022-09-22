@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -18,6 +18,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -79,8 +80,10 @@ fun AppTheme(
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
-        systemUiController.setSystemBarsColor(color = colors.primary)
-        systemUiController.systemBarsDarkContentEnabled = false
+        systemUiController.setSystemBarsColor(
+            color = colors.primary,
+            darkIcons = colors.primary.luminance() > 0.5
+        )
     }
 
     CompositionLocalProvider(
@@ -94,7 +97,7 @@ fun AppTheme(
             content = {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background,
+                    color = colors.background,
                     content = content
                 )
             }
@@ -108,8 +111,10 @@ fun SplashTheme() {
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
-        systemUiController.setSystemBarsColor(color = Color.Transparent)
-        systemUiController.systemBarsDarkContentEnabled = false
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = colors.primary.luminance() > 0.5
+        )
     }
 
     MaterialTheme(
@@ -120,17 +125,17 @@ fun SplashTheme() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colors.background),
+                    .background(color = colors.background),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AppLoadingAnimation()
 
-                Spacer(modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.height(height = 16.dp))
 
                 Text(
                     text = stringResource(id = R.string.appName),
-                    color = MaterialTheme.colors.onBackground,
+                    color = colors.onBackground,
                     style = MaterialTheme.typography.h4,
                     fontWeight = FontWeight.Bold
                 )
