@@ -17,7 +17,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,21 +41,6 @@ private val LightColorPalette = lightColors(
 )
 
 private val DarkColorPalette = darkColors(
-    primary = PrimaryDarkColor,
-    onPrimary = OnPrimaryDarkColor,
-    primaryVariant = PrimaryVariantDarkColor,
-    secondary = SecondaryDarkColor,
-    onSecondary = OnSecondaryDarkColor,
-    secondaryVariant = SecondaryVariantDarkColor,
-    background = BackgroundDarkColor,
-    onBackground = OnBackgroundDarkColor,
-    surface = SurfaceDarkColor,
-    onSurface = OnSurfaceDarkColor,
-    error = ErrorDarkColor,
-    onError = OnErrorDarkColor
-)
-
-private val SplashColorPalette = darkColors(
     primary = PrimaryDarkColor,
     onPrimary = OnPrimaryDarkColor,
     primaryVariant = PrimaryVariantDarkColor,
@@ -107,13 +91,13 @@ fun AppTheme(
 
 @Composable
 fun SplashTheme() {
-    val colors = SplashColorPalette
+    val colors = if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = Color.Transparent,
-            darkIcons = colors.primary.luminance() > 0.5
+            color = colors.background,
+            darkIcons = colors.background.luminance() > 0.5
         )
     }
 
