@@ -62,6 +62,7 @@ import tmidev.customerbase.presentation.common.AppFloatingActionButton
 import tmidev.customerbase.presentation.common.AppOutlinedTextField
 import tmidev.customerbase.presentation.common.AppTextWithLabel
 import tmidev.customerbase.presentation.common.AppTopBarWithDrawer
+import tmidev.customerbase.presentation.common.ClearTrailingTextField
 import tmidev.customerbase.presentation.common.MenuItem
 import tmidev.customerbase.presentation.common.theme.activeColor
 import tmidev.customerbase.presentation.common.theme.elevating
@@ -206,8 +207,16 @@ private fun ComposeSearchField(
             modifier = Modifier.weight(weight = 1F),
             value = query,
             onValueChange = { onQueryChanged(it) },
+            strictString = false,
             labelRes = R.string.labelSearch,
             placeholderRes = R.string.placeholderSearch,
+            trailingIcon = if (query.isEmpty()) null else {
+                {
+                    ClearTrailingTextField {
+                        onQueryChanged("")
+                    }
+                }
+            },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 keyboardType = KeyboardType.Text,

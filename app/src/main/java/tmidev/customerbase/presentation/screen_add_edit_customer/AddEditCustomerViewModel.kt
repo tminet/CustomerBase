@@ -112,6 +112,13 @@ class AddEditCustomerViewModel @Inject constructor(
     }
 
     fun saveCustomer() {
+        viewModelState.update { state ->
+            state.copy(
+                firstName = state.firstName.trim(),
+                lastName = state.lastName.trim()
+            )
+        }
+
         val firstNameResult = validateSimpleFieldUseCase(
             string = viewModelState.value.firstName
         )

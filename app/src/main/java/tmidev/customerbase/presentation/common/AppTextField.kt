@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +25,7 @@ fun AppOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    strictString: Boolean,
     @StringRes labelRes: Int,
     @StringRes placeholderRes: Int? = null,
     @StringRes errorRes: Int? = null,
@@ -44,14 +49,16 @@ fun AppOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = { value ->
-            if (enableWhiteSpace) onValueChange(value)
-            else onValueChange(value.filterNot { it.isWhitespace() })
+            if (strictString) {
+                if (enableWhiteSpace) onValueChange(value.clearDoubleWhitespace())
+                else onValueChange(value.clearAllWhitespace())
+            } else onValueChange(value)
         },
         enabled = enabled,
         readOnly = readOnly,
         label = { Text(text = stringResource(id = labelRes)) },
-        placeholder = {
-            placeholderRes?.let { Text(text = stringResource(id = placeholderRes)) }
+        placeholder = if (placeholderRes == null) null else {
+            { Text(text = stringResource(id = placeholderRes)) }
         },
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
@@ -71,4 +78,20 @@ fun AppOutlinedTextField(
             style = MaterialTheme.typography.caption
         )
     }
+}
+
+@Composable
+fun ClearTrailingTextField(
+    onClick: () -> Unit
+) = IconButton(onClick = onClick) {
+    Icon(imageVector = Icons.Rounded.Clear, contentDescription = null)
+}
+
+private fun String.clearDoubleWhitespace(): String {
+    val regex = "\\s{2,}".toRegex()
+    return this.replace(regex = regex, replacement = " ")
+}
+
+private fun String.clearAllWhitespace(): String {
+    return this.filterNot { it.isWhitespace() }
 }

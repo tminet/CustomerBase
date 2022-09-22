@@ -34,6 +34,7 @@ import tmidev.customerbase.presentation.common.AppButton
 import tmidev.customerbase.presentation.common.AppButtonOutlined
 import tmidev.customerbase.presentation.common.AppOutlinedTextField
 import tmidev.customerbase.presentation.common.AppTopBarWithBack
+import tmidev.customerbase.presentation.common.ClearTrailingTextField
 import tmidev.customerbase.presentation.common.theme.spacing
 
 @Composable
@@ -77,9 +78,17 @@ fun AddEditCustomerScreen(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.firstName,
                     onValueChange = { viewModel.changeFirstName(value = it) },
+                    strictString = true,
                     labelRes = R.string.labelFirstName,
                     placeholderRes = R.string.placeholderFirstName,
                     errorRes = state.firstNameError,
+                    trailingIcon = if (state.firstName.isEmpty()) null else {
+                        {
+                            ClearTrailingTextField {
+                                viewModel.changeFirstName(value = "")
+                            }
+                        }
+                    },
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
                         keyboardType = KeyboardType.Text,
@@ -93,9 +102,17 @@ fun AddEditCustomerScreen(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.lastName,
                     onValueChange = { viewModel.changeLastName(value = it) },
+                    strictString = true,
                     labelRes = R.string.labelLastName,
                     placeholderRes = R.string.placeholderLastName,
                     errorRes = state.lastNameError,
+                    trailingIcon = if (state.lastName.isEmpty()) null else {
+                        {
+                            ClearTrailingTextField {
+                                viewModel.changeLastName(value = "")
+                            }
+                        }
+                    },
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
                         keyboardType = KeyboardType.Text,
