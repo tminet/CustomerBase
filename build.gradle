@@ -1,11 +1,11 @@
 buildscript {
     ext {
-        gradle_ver = '7.2.2'
+        gradle_ver = '7.3.0'
         kotlin_ver = '1.7.10'
         coroutines_ver = '1.6.4'
-        compose_compiler_ver = '1.3.0'
+        compose_compiler_ver = '1.3.1'
         compose_ver = '1.2.1'
-        hilt_ver = '2.43.2'
+        hilt_ver = '2.44'
         accompanist_ver = '0.25.1'
         room_ver = '2.4.3'
     }
