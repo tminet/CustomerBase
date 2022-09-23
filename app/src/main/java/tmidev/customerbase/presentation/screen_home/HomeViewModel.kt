@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import tmidev.core.data.source.local.CustomersDataSource
 import tmidev.core.data.source.local.UserPreferencesDataSource
 import tmidev.core.domain.model.Customer
+import tmidev.core.util.CoroutinesDispatchers
 import javax.inject.Inject
 
 sealed class HomeChannel {
@@ -46,6 +47,7 @@ private data class HomeViewModelState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val coroutinesDispatchers: CoroutinesDispatchers,
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val customersDataSource: CustomersDataSource
 ) : ViewModel() {
@@ -67,39 +69,54 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun getCustomers() = viewModelScope.launch {
-        combine(searchQuery, userPreferencesDataSource.isOrderListAscending) { query, isAscending ->
-            query to isAscending
-        }.flatMapLatest { (query, isAscending) ->
-            customersDataSource.getAll(query = query, isAscending = isAscending)
-        }.collectLatest { customers ->
-            viewModelState.update { state ->
-                state.copy(
-                    isLoading = false,
-                    customers = customers
-                )
+    private fun getCustomers() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            combine(
+                searchQuery,
+                userPreferencesDataSource.isOrderListAscending
+            ) { query, isAscending ->
+                query to isAscending
+            }.flatMapLatest { (query, isAscending) ->
+                customersDataSource.getAll(query = query, isAscending = isAscending)
+            }.collectLatest { customers ->
+                viewModelState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        customers = customers
+                    )
+                }
             }
         }
     }
 
-    fun openDrawer() = viewModelScope.launch {
-        _channel.send(element = HomeChannel.OpenDrawer)
+    fun openDrawer() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            _channel.send(element = HomeChannel.OpenDrawer)
+        }
     }
 
-    fun navToSettingsScreen() = viewModelScope.launch {
-        _channel.send(element = HomeChannel.NavToSettingsScreen)
+    fun navToSettingsScreen() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            _channel.send(element = HomeChannel.NavToSettingsScreen)
+        }
     }
 
-    fun navToAddEditCustomerScreen(customerId: Int?) = viewModelScope.launch {
-        _channel.send(element = HomeChannel.NavToAddEditCustomerScreen(customerId = customerId))
+    fun navToAddEditCustomerScreen(customerId: Int?) {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            _channel.send(element = HomeChannel.NavToAddEditCustomerScreen(customerId = customerId))
+        }
     }
 
-    fun deleteCustomer(customer: Customer) = viewModelScope.launch {
-        customersDataSource.delete(customer = customer)
+    fun deleteCustomer(customer: Customer) {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            customersDataSource.delete(customer = customer)
+        }
     }
 
-    fun switchListOrder() = viewModelScope.launch {
-        userPreferencesDataSource.switchOrderList()
+    fun switchListOrder() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            userPreferencesDataSource.switchOrderList()
+        }
     }
 
     fun updateSearchQuery(query: String) {

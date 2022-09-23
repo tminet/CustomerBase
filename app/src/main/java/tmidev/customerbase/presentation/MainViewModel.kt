@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tmidev.core.data.source.local.UserPreferencesDataSource
+import tmidev.core.util.CoroutinesDispatchers
 import javax.inject.Inject
 
 data class MainScreenState(
@@ -31,6 +32,7 @@ private data class MainViewModelState(
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val coroutinesDispatchers: CoroutinesDispatchers,
     private val userPreferencesDataSource: UserPreferencesDataSource
 ) : ViewModel() {
     private val viewModelState = MutableStateFlow(value = MainViewModelState())
@@ -45,10 +47,12 @@ class MainViewModel @Inject constructor(
         loadInitialSettings()
     }
 
-    private fun loadInitialSettings() = viewModelScope.launch {
-        userPreferencesDataSource.isAppThemeDarkMode.collectLatest { isDark ->
-            viewModelState.update { it.copy(isAppThemeDarkMode = isDark) }
-            delayToShowCustomAnimationOnAppStartup()
+    private fun loadInitialSettings() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            userPreferencesDataSource.isAppThemeDarkMode.collectLatest { isDark ->
+                viewModelState.update { it.copy(isAppThemeDarkMode = isDark) }
+                delayToShowCustomAnimationOnAppStartup()
+            }
         }
     }
 
