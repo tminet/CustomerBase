@@ -1,13 +1,10 @@
-name: Unit Test Checkout
+name: Build Debug APK
 
-on:
-  pull_request:
-    branches:
-      - master
+on: workflow_dispatch
 
 jobs:
-  unit_test:
-    name: Unit Test
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,14 +29,13 @@ jobs:
       #   id: permission_gradlew_step
       #   run: chmod +x gradlew
 
-      - name: Run Unit Tests
-        id: run_unit_tests_step
-        run: ./gradlew testDebugUnitTest --stacktrace
+      - name: Build Debug APK
+        id: build_debug_apk_step
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: Upload Test Reports
-        id: upload_test_reports_step
-        if: always()
+      - name: Upload Artifact
+        id: upload_artifact_step
         uses: actions/upload-artifact@v3
         with:
-          name: Test Reports
-          path: app/build/reports/
+          name: Debug Artifacts
+          path: app/build/outputs/
