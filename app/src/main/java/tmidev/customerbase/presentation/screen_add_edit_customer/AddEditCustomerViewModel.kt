@@ -19,6 +19,7 @@ import tmidev.core.domain.model.Customer
 import tmidev.core.domain.type.InputErrorType
 import tmidev.core.domain.usecase.ValidateSimpleFieldUseCase
 import tmidev.core.util.ConstantsScreenKey
+import tmidev.core.util.CoroutinesDispatchers
 import tmidev.customerbase.R
 import javax.inject.Inject
 
@@ -62,6 +63,7 @@ private data class AddEditCustomerViewModelSate(
 @HiltViewModel
 class AddEditCustomerViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val coroutinesDispatchers: CoroutinesDispatchers,
     private val customersDataSource: CustomersDataSource,
     private val validateSimpleFieldUseCase: ValidateSimpleFieldUseCase
 ) : ViewModel() {
@@ -80,23 +82,25 @@ class AddEditCustomerViewModel @Inject constructor(
         getCustomer()
     }
 
-    private fun getCustomer() = viewModelScope.launch {
-        savedStateHandle.get<String>(ConstantsScreenKey.ADD_EDIT_CUSTOMER_ID)
-            ?.toIntOrNull()
-            ?.let { customerId ->
-                val customer = customersDataSource.getById(customerId = customerId).first()
+    private fun getCustomer() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            savedStateHandle.get<String>(ConstantsScreenKey.ADD_EDIT_CUSTOMER_ID)
+                ?.toIntOrNull()
+                ?.let { customerId ->
+                    val customer = customersDataSource.getById(customerId = customerId).first()
 
-                viewModelState.update { state ->
-                    state.copy(
-                        id = customer.id,
-                        firstName = customer.firstName,
-                        lastName = customer.lastName,
-                        isActive = customer.isActive,
-                        addedAt = customer.addedAt,
-                        screenTitle = R.string.titleEditCustomerScreen
-                    )
+                    viewModelState.update { state ->
+                        state.copy(
+                            id = customer.id,
+                            firstName = customer.firstName,
+                            lastName = customer.lastName,
+                            isActive = customer.isActive,
+                            addedAt = customer.addedAt,
+                            screenTitle = R.string.titleEditCustomerScreen
+                        )
+                    }
                 }
-            }
+        }
     }
 
     fun changeFirstName(value: String) {
@@ -156,14 +160,16 @@ class AddEditCustomerViewModel @Inject constructor(
             addedAt = viewModelState.value.addedAt.takeIf { it != 0L } ?: System.currentTimeMillis()
         )
 
-        viewModelScope.launch {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
             customersDataSource.save(customer = customer)
         }
 
         navBackToHomeScreen()
     }
 
-    fun navBackToHomeScreen() = viewModelScope.launch {
-        _channel.send(element = AddEditCustomerChannel.NavBackToHomeScreen)
+    fun navBackToHomeScreen() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            _channel.send(element = AddEditCustomerChannel.NavBackToHomeScreen)
+        }
     }
 }
