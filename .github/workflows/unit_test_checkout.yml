@@ -34,4 +34,12 @@ jobs:
 
       - name: Run Unit Tests
         id: run_unit_tests_step
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Upload Test Reports
+        id: upload_test_reports_step
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test Reports
+          path: app/build/reports/
