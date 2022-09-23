@@ -8,11 +8,14 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import tmidev.core.data.source.local.UserPreferencesDataSource
+import tmidev.core.util.CoroutinesDispatchers
 import javax.inject.Inject
 
 class UserPreferencesDataSourceImpl @Inject constructor(
+    coroutinesDispatchers: CoroutinesDispatchers,
     private val dataStore: DataStore<Preferences>
 ) : UserPreferencesDataSource {
     private val tag = this::class.java.simpleName
@@ -24,7 +27,7 @@ class UserPreferencesDataSourceImpl @Inject constructor(
         }
         .map { preferences ->
             preferences[PreferencesKeys.IS_APP_THEME_DARK_MODE]
-        }
+        }.flowOn(context = coroutinesDispatchers.main)
 
     override val isOrderListAscending: Flow<Boolean> = dataStore.data
         .catch { exception ->
@@ -33,7 +36,7 @@ class UserPreferencesDataSourceImpl @Inject constructor(
         }
         .map { preferences ->
             preferences[PreferencesKeys.IS_ORDER_LIST_ASCENDING] ?: true
-        }
+        }.flowOn(context = coroutinesDispatchers.main)
 
     override suspend fun updateAppTheme(darkMode: Boolean) {
         dataStore.edit { preferences ->

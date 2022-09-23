@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tmidev.core.data.source.local.UserPreferencesDataSource
+import tmidev.core.util.CoroutinesDispatchers
 import javax.inject.Inject
 
 sealed class SettingsChannel {
@@ -36,6 +37,7 @@ private data class SettingsViewModelState(
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val coroutinesDispatchers: CoroutinesDispatchers,
     private val userPreferencesDataSource: UserPreferencesDataSource
 ) : ViewModel() {
     private val viewModelState = MutableStateFlow(value = SettingsViewModelState())
@@ -53,22 +55,28 @@ class SettingsViewModel @Inject constructor(
         loadAppTheme()
     }
 
-    private fun loadAppTheme() = viewModelScope.launch {
-        userPreferencesDataSource.isAppThemeDarkMode.collectLatest { isDark ->
-            viewModelState.update { state ->
-                state.copy(
-                    isLoading = false,
-                    isAppThemeDarkMode = isDark
-                )
+    private fun loadAppTheme() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            userPreferencesDataSource.isAppThemeDarkMode.collectLatest { isDark ->
+                viewModelState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        isAppThemeDarkMode = isDark
+                    )
+                }
             }
         }
     }
 
-    fun navBackToHomeScreen() = viewModelScope.launch {
-        _channel.send(element = SettingsChannel.NavBackToHomeScreen)
+    fun navBackToHomeScreen() {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            _channel.send(element = SettingsChannel.NavBackToHomeScreen)
+        }
     }
 
-    fun updateAppTheme(currentMode: Boolean) = viewModelScope.launch {
-        userPreferencesDataSource.updateAppTheme(darkMode = !currentMode)
+    fun updateAppTheme(currentMode: Boolean) {
+        viewModelScope.launch(context = coroutinesDispatchers.main) {
+            userPreferencesDataSource.updateAppTheme(darkMode = !currentMode)
+        }
     }
 }
