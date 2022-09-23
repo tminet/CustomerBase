@@ -24,6 +24,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -45,6 +47,7 @@ fun AddEditCustomerScreen(
     val state by viewModel.screenState.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = Unit) {
         viewModel.channel.collect { channel ->
@@ -93,6 +96,9 @@ fun AddEditCustomerScreen(
                         capitalization = KeyboardCapitalization.Words,
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Down) }
                     )
                 )
 
