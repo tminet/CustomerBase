@@ -3,7 +3,7 @@ package tmidev.customerbase.framework.room.customer
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import tmidev.core.util.ConstantsRoom
@@ -46,7 +46,7 @@ interface CustomerDao {
     )
     fun getById(customerId: Int): Flow<CustomerEntity>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(customerEntity: CustomerEntity)
 
     @Delete
