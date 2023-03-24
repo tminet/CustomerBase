@@ -1,17 +1,16 @@
 plugins {
-    id 'java-library'
-    id 'org.jetbrains.kotlin.jvm'
+    id "org.jetbrains.kotlin.jvm"
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility(javaVer)
+    targetCompatibility(javaVer)
 }
 
 dependencies {
-    implementation 'javax.inject:javax.inject:1'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_ver"
+    implementation "javax.inject:javax.inject:1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVer"
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_ver"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVer"
 }

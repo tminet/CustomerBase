@@ -3,7 +3,7 @@ name: Unit Test Checkout
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   unit_test:
