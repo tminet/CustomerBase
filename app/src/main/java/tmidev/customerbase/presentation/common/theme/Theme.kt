@@ -14,18 +14,19 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import tmidev.customerbase.R
 import tmidev.customerbase.presentation.common.AppLoadingAnimation
 
-private val LightColorPalette = lightColors(
+private val lightColorPalette = lightColors(
     primary = PrimaryLightColor,
     onPrimary = OnPrimaryLightColor,
     primaryVariant = PrimaryVariantLightColor,
@@ -40,7 +41,7 @@ private val LightColorPalette = lightColors(
     onError = OnErrorLightColor
 )
 
-private val DarkColorPalette = darkColors(
+private val darkColorPalette = darkColors(
     primary = PrimaryDarkColor,
     onPrimary = OnPrimaryDarkColor,
     primaryVariant = PrimaryVariantDarkColor,
@@ -57,17 +58,23 @@ private val DarkColorPalette = darkColors(
 
 @Composable
 fun AppTheme(
+    systemUiController: SystemUiController = rememberSystemUiController(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
-    val systemUiController = rememberSystemUiController()
+    val colors = if (darkTheme) darkColorPalette else lightColorPalette
 
-    SideEffect {
+    DisposableEffect(
+        key1 = systemUiController,
+        key2 = colors
+    ) {
         systemUiController.setSystemBarsColor(
             color = colors.primary,
-            darkIcons = colors.primary.luminance() > 0.5
+            darkIcons = colors.primary.luminance() > 0.5,
+            isNavigationBarContrastEnforced = false
         )
+
+        onDispose { }
     }
 
     CompositionLocalProvider(
@@ -90,15 +97,22 @@ fun AppTheme(
 }
 
 @Composable
-fun SplashTheme() {
-    val colors = if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette
-    val systemUiController = rememberSystemUiController()
+fun SplashTheme(
+    systemUiController: SystemUiController = rememberSystemUiController()
+) {
+    val colors = if (isSystemInDarkTheme()) darkColorPalette else lightColorPalette
 
-    SideEffect {
+    DisposableEffect(
+        key1 = systemUiController,
+        key2 = colors
+    ) {
         systemUiController.setSystemBarsColor(
             color = colors.background,
-            darkIcons = colors.background.luminance() > 0.5
+            darkIcons = colors.background.luminance() > 0.5,
+            isNavigationBarContrastEnforced = false
         )
+
+        onDispose { }
     }
 
     MaterialTheme(
