@@ -38,29 +38,6 @@ private fun AppTopBar(
 )
 
 @Composable
-fun AppTopBarSimple(
-    @StringRes title: Int,
-    titleAlign: TextAlign = TextAlign.Start,
-    backgroundColor: Color = MaterialTheme.colors.primary,
-    contentColor: Color = MaterialTheme.colors.onPrimary
-) = AppTopBar(
-    backgroundColor = backgroundColor,
-    contentColor = contentColor
-) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.spacing.medium),
-        text = stringResource(id = title),
-        color = contentColor,
-        style = MaterialTheme.typography.h6,
-        textAlign = titleAlign,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 1
-    )
-}
-
-@Composable
 fun AppTopBarWithDrawer(
     @StringRes title: Int,
     backgroundColor: Color = MaterialTheme.colors.primary,
