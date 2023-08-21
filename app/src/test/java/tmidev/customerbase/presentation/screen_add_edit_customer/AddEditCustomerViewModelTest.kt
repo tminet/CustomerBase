@@ -2,7 +2,6 @@ package tmidev.customerbase.presentation.screen_add_edit_customer
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -17,7 +16,6 @@ import tmidev.core.domain.usecase.ValidateSimpleFieldUseCase
 import tmidev.customerbase.DispatcherRule
 import tmidev.customerbase.R
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class AddEditCustomerViewModelTest {
     @get:Rule

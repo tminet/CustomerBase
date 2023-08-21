@@ -69,6 +69,7 @@ private fun NavGraphBuilder.addEditCustomerScreen(
     arguments = listOf(
         navArgument(name = ConstantsScreenKey.ADD_EDIT_CUSTOMER_ID) {
             type = NavType.StringType
+            nullable = true
         }
     )
 ) {

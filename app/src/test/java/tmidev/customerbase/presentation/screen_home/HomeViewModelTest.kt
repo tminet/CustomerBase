@@ -1,7 +1,6 @@
 package tmidev.customerbase.presentation.screen_home
 
 import app.cash.turbine.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -15,7 +14,6 @@ import tmidev.core.data.source.local.CustomersDataSource
 import tmidev.core.data.source.local.UserPreferencesDataSource
 import tmidev.customerbase.DispatcherRule
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class HomeViewModelTest {
     @get:Rule
@@ -55,24 +53,6 @@ class HomeViewModelTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
-
-        job.join()
-        job.cancel()
-    }
-
-    @Test
-    fun `channel receives properly element for openDrawer`() = runTest {
-        val expectedElement = HomeChannel.OpenDrawer
-
-        val job = launch {
-            viewModel.channel.test {
-                val actualElement = awaitItem()
-                assertEquals(expectedElement, actualElement)
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-        viewModel.openDrawer()
 
         job.join()
         job.cancel()
