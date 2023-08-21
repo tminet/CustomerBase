@@ -1,7 +1,6 @@
 package tmidev.customerbase.presentation
 
 import app.cash.turbine.test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -14,7 +13,6 @@ import org.mockito.junit.MockitoJUnitRunner
 import tmidev.core.data.source.local.UserPreferencesDataSource
 import tmidev.customerbase.DispatcherRule
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest {
     @get:Rule
