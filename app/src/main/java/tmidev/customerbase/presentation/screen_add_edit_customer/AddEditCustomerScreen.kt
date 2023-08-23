@@ -13,14 +13,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.NavigateBefore
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,22 +35,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tmidev.customerbase.R
-import tmidev.customerbase.presentation.common.AppButton
-import tmidev.customerbase.presentation.common.AppButtonOutlined
 import tmidev.customerbase.presentation.common.AppOutlinedTextField
-import tmidev.customerbase.presentation.common.AppTopBarWithBack
 import tmidev.customerbase.presentation.common.ClearTrailingTextField
-import tmidev.customerbase.presentation.common.theme.spacing
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditCustomerScreen(
+    modifier: Modifier = Modifier,
     navBackToHomeScreen: () -> Unit,
     viewModel: AddEditCustomerViewModel = hiltViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
-    val scaffoldState = rememberScaffoldState()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
 
@@ -58,12 +62,21 @@ fun AddEditCustomerScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState,
+        modifier = modifier,
         topBar = {
-            AppTopBarWithBack(title = state.screenTitle) {
-                viewModel.navBackToHomeScreen()
-            }
+            TopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.titleAddCustomerScreen))
+                },
+                navigationIcon = {
+                    IconButton(onClick = viewModel::navBackToHomeScreen) {
+                        Icon(
+                            imageVector = Icons.Rounded.NavigateBefore,
+                            contentDescription = stringResource(id = R.string.navigateBack)
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
         Column(
@@ -75,7 +88,7 @@ fun AddEditCustomerScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = MaterialTheme.spacing.medium)
+                    .padding(all = 16.dp)
             ) {
                 AppOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -86,11 +99,7 @@ fun AddEditCustomerScreen(
                     placeholderRes = R.string.placeholderFirstName,
                     errorRes = state.firstNameError,
                     trailingIcon = if (state.firstName.isEmpty()) null else {
-                        {
-                            ClearTrailingTextField {
-                                viewModel.changeFirstName(value = "")
-                            }
-                        }
+                        { ClearTrailingTextField { viewModel.changeFirstName(value = "") } }
                     },
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
@@ -102,7 +111,7 @@ fun AddEditCustomerScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(height = 16.dp))
 
                 AppOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -113,11 +122,7 @@ fun AddEditCustomerScreen(
                     placeholderRes = R.string.placeholderLastName,
                     errorRes = state.lastNameError,
                     trailingIcon = if (state.lastName.isEmpty()) null else {
-                        {
-                            ClearTrailingTextField {
-                                viewModel.changeLastName(value = "")
-                            }
-                        }
+                        { ClearTrailingTextField { viewModel.changeLastName(value = "") } }
                     },
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
@@ -129,7 +134,7 @@ fun AddEditCustomerScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(height = 16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -140,8 +145,10 @@ fun AddEditCustomerScreen(
                         text = stringResource(
                             id = if (state.isActive) R.string.active else R.string.inactive
                         ),
-                        style = MaterialTheme.typography.body1
+                        style = MaterialTheme.typography.bodyLarge
                     )
+
+                    Spacer(modifier = Modifier.width(width = 8.dp))
 
                     Switch(
                         checked = state.isActive,
@@ -149,21 +156,21 @@ fun AddEditCustomerScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(height = MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(height = 32.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AppButtonOutlined(stringRes = R.string.cancel) {
-                        viewModel.navBackToHomeScreen()
+                    OutlinedButton(onClick = viewModel::navBackToHomeScreen) {
+                        Text(text = stringResource(id = R.string.cancel))
                     }
 
-                    Spacer(modifier = Modifier.width(width = MaterialTheme.spacing.medium))
+                    Spacer(modifier = Modifier.width(width = 16.dp))
 
-                    AppButton(stringRes = R.string.finish) {
-                        viewModel.saveCustomer()
+                    OutlinedButton(onClick = viewModel::saveCustomer) {
+                        Text(text = stringResource(id = R.string.finish))
                     }
                 }
             }

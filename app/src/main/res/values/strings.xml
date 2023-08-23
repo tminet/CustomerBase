@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="appName">Customer Base</string>
 
@@ -6,9 +7,9 @@
     <string name="titleEditCustomerScreen">Edit customer</string>
     <string name="titleSettingsScreen">Settings</string>
 
-    <string name="openMenu">Open menu</string>
     <string name="navigateBack">Navigate back</string>
 
+    <string name="addCustomer">Add customer</string>
     <string name="settings">Settings</string>
 
     <string name="sortOrder">Sort order</string>
@@ -34,6 +35,10 @@
 
     <string name="active">Active</string>
     <string name="inactive">Inactive</string>
+
+    <string name="clear">Clear</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
     <string name="finish">Finish</string>
     <string name="cancel">Cancel</string>

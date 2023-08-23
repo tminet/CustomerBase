@@ -15,8 +15,8 @@ android {
         applicationId = libs.versions.appId.get()
         minSdk = libs.versions.androidApiMin.get().toInt()
         targetSdk = libs.versions.androidApiTarget.get().toInt()
-        versionCode = 3
-        versionName = "1.1.1"
+        versionCode = 4
+        versionName = "1.1.2"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -64,7 +64,7 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.runtime)
     implementation(libs.compose.ui)
-    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
     implementation(libs.compose.materialIcons)
 
     implementation(libs.accompanist.systemUiController)

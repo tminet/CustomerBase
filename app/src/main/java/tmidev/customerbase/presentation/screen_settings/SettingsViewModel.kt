@@ -17,7 +17,7 @@ import tmidev.core.util.CoroutinesDispatchers
 import javax.inject.Inject
 
 sealed class SettingsChannel {
-    object NavBackToHomeScreen : SettingsChannel()
+    data object NavBackToHomeScreen : SettingsChannel()
 }
 
 data class SettingsScreenState(

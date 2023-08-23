@@ -6,19 +6,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import tmidev.customerbase.R
 
 @Composable
 fun AppOutlinedTextField(
@@ -37,7 +38,7 @@ fun AppOutlinedTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) = Column(
     modifier = modifier,
     verticalArrangement = Arrangement.Center
@@ -65,17 +66,16 @@ fun AppOutlinedTextField(
         visualTransformation = visualTransformation,
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        shape = MaterialTheme.shapes.large
+        keyboardActions = keyboardActions
     )
 
     errorRes?.let {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = it),
-            color = MaterialTheme.colors.error,
+            color = MaterialTheme.colorScheme.error,
             textAlign = TextAlign.End,
-            style = MaterialTheme.typography.caption
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -84,7 +84,10 @@ fun AppOutlinedTextField(
 fun ClearTrailingTextField(
     onClick: () -> Unit
 ) = IconButton(onClick = onClick) {
-    Icon(imageVector = Icons.Rounded.Clear, contentDescription = null)
+    Icon(
+        imageVector = Icons.Rounded.Clear,
+        contentDescription = stringResource(id = R.string.clear)
+    )
 }
 
 private fun String.clearDoubleWhitespace(): String {

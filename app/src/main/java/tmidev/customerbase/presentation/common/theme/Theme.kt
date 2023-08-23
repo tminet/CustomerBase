@@ -1,5 +1,6 @@
 package tmidev.customerbase.presentation.common.theme
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -7,88 +8,72 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import tmidev.customerbase.R
 import tmidev.customerbase.presentation.common.AppLoadingAnimation
 
-private val lightColorPalette = lightColors(
-    primary = PrimaryLightColor,
-    onPrimary = OnPrimaryLightColor,
-    primaryVariant = PrimaryVariantLightColor,
-    secondary = SecondaryLightColor,
-    onSecondary = OnSecondaryLightColor,
-    secondaryVariant = SecondaryVariantLightColor,
-    background = BackgroundLightColor,
-    onBackground = OnBackgroundLightColor,
-    surface = SurfaceLightColor,
-    onSurface = OnSurfaceLightColor,
-    error = ErrorLightColor,
-    onError = OnErrorLightColor
-)
-
-private val darkColorPalette = darkColors(
-    primary = PrimaryDarkColor,
-    onPrimary = OnPrimaryDarkColor,
-    primaryVariant = PrimaryVariantDarkColor,
-    secondary = SecondaryDarkColor,
-    onSecondary = OnSecondaryDarkColor,
-    secondaryVariant = SecondaryVariantDarkColor,
-    background = BackgroundDarkColor,
-    onBackground = OnBackgroundDarkColor,
-    surface = SurfaceDarkColor,
-    onSurface = OnSurfaceDarkColor,
-    error = ErrorDarkColor,
-    onError = OnErrorDarkColor
-)
-
 @Composable
 fun AppTheme(
     systemUiController: SystemUiController = rememberSystemUiController(),
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    useDarkColors: Boolean = isSystemInDarkTheme(),
+    useDynamicColors: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) darkColorPalette else lightColorPalette
+    val colorScheme = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && useDynamicColors -> {
+            if (useDarkColors) dynamicDarkColorScheme(context = LocalContext.current)
+            else dynamicLightColorScheme(context = LocalContext.current)
+        }
+
+        useDarkColors -> darkColorScheme()
+        else -> lightColorScheme()
+    }
+
+    val customColors = if (useDarkColors) OnDarkCustomColors else OnLightCustomColors
 
     DisposableEffect(
         key1 = systemUiController,
-        key2 = colors
+        key2 = useDarkColors,
+        key3 = useDynamicColors
     ) {
         systemUiController.setSystemBarsColor(
-            color = colors.primary,
-            darkIcons = colors.primary.luminance() > 0.5,
-            isNavigationBarContrastEnforced = false
+            color = Color.Transparent,
+            darkIcons = colorScheme.background.luminance() > 0.5,
+            isNavigationBarContrastEnforced = false,
+            transformColorForLightContent = { Color.Black.copy(alpha = 0.6F) }
         )
 
         onDispose { }
     }
 
     CompositionLocalProvider(
-        LocalSpacing provides Spacing(),
-        LocalElevating provides Elevating()
+        LocalCustomColors provides customColors
     ) {
         MaterialTheme(
-            colors = colors,
+            colorScheme = colorScheme,
             typography = Typography,
-            shapes = Shapes,
             content = {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = colors.background,
+                    color = colorScheme.background,
                     content = content
                 )
             }
@@ -100,30 +85,30 @@ fun AppTheme(
 fun SplashTheme(
     systemUiController: SystemUiController = rememberSystemUiController()
 ) {
-    val colors = if (isSystemInDarkTheme()) darkColorPalette else lightColorPalette
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
 
     DisposableEffect(
         key1 = systemUiController,
-        key2 = colors
+        key2 = colorScheme
     ) {
         systemUiController.setSystemBarsColor(
-            color = colors.background,
-            darkIcons = colors.background.luminance() > 0.5,
-            isNavigationBarContrastEnforced = false
+            color = Color.Transparent,
+            darkIcons = colorScheme.background.luminance() > 0.5,
+            isNavigationBarContrastEnforced = false,
+            transformColorForLightContent = { Color.Black.copy(alpha = 0.6F) }
         )
 
         onDispose { }
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colorScheme,
         typography = Typography,
-        shapes = Shapes,
         content = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = colors.background),
+                    .background(color = colorScheme.background),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -133,9 +118,8 @@ fun SplashTheme(
 
                 Text(
                     text = stringResource(id = R.string.appName),
-                    color = colors.onBackground,
-                    style = MaterialTheme.typography.h4,
-                    fontWeight = FontWeight.Bold
+                    color = colorScheme.onBackground,
+                    style = MaterialTheme.typography.headlineMedium
                 )
             }
         }
