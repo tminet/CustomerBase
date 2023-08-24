@@ -24,7 +24,7 @@ import tmidev.customerbase.R
 import javax.inject.Inject
 
 sealed class AddEditCustomerChannel {
-    object NavBackToHomeScreen : AddEditCustomerChannel()
+    data object NavBackToHomeScreen : AddEditCustomerChannel()
 }
 
 data class AddEditCustomerScreenState(

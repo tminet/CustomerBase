@@ -22,8 +22,7 @@ import tmidev.core.util.CoroutinesDispatchers
 import javax.inject.Inject
 
 sealed class HomeChannel {
-    object OpenDrawer : HomeChannel()
-    object NavToSettingsScreen : HomeChannel()
+    data object NavToSettingsScreen : HomeChannel()
     data class NavToAddEditCustomerScreen(val customerId: Int?) : HomeChannel()
 }
 
@@ -86,12 +85,6 @@ class HomeViewModel @Inject constructor(
                     )
                 }
             }
-        }
-    }
-
-    fun openDrawer() {
-        viewModelScope.launch(context = coroutinesDispatchers.main) {
-            _channel.send(element = HomeChannel.OpenDrawer)
         }
     }
 

@@ -11,34 +11,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.LightMode
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.icons.rounded.NavigateBefore
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tmidev.customerbase.R
-import tmidev.customerbase.presentation.common.AppTopBarWithBack
-import tmidev.customerbase.presentation.common.theme.spacing
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    modifier: Modifier = Modifier,
     navBackToHomeScreen: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
-    val scaffoldState = rememberScaffoldState()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
     val isThemeDarkMode = state.isAppThemeDarkMode ?: isSystemInDarkTheme()
@@ -56,12 +59,21 @@ fun SettingsScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState,
+        modifier = modifier,
         topBar = {
-            AppTopBarWithBack(title = R.string.settings) {
-                viewModel.navBackToHomeScreen()
-            }
+            TopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.titleSettingsScreen))
+                },
+                navigationIcon = {
+                    IconButton(onClick = viewModel::navBackToHomeScreen) {
+                        Icon(
+                            imageVector = Icons.Rounded.NavigateBefore,
+                            contentDescription = stringResource(id = R.string.navigateBack)
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
         Column(
@@ -94,22 +106,20 @@ private fun ComposeSwitchTheme(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = MaterialTheme.spacing.medium),
+                .padding(all = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = currentThemeIcon,
-                contentDescription = currentThemeName,
-                tint = MaterialTheme.colors.onBackground
+                contentDescription = currentThemeName
             )
 
-            Spacer(modifier = Modifier.width(width = MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.width(width = 16.dp))
 
             Text(
                 modifier = Modifier.weight(weight = 1F),
                 text = currentThemeName,
-                color = MaterialTheme.colors.onBackground,
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

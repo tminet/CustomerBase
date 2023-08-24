@@ -3,10 +3,10 @@ package tmidev.customerbase.presentation
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -26,13 +26,13 @@ import tmidev.customerbase.presentation.screen_settings.SettingsScreen
 fun AppContent(
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
-    val state by mainViewModel.screenState.collectAsState()
+    val state by mainViewModel.screenState.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
     val isDarkTheme = state.isAppThemeDarkMode ?: isSystemInDarkTheme()
 
     if (state.isLoading) SplashTheme()
-    else AppTheme(darkTheme = isDarkTheme) {
+    else AppTheme(useDarkColors = isDarkTheme) {
         NavHost(
             modifier = Modifier.fillMaxSize(),
             navController = navController,
@@ -49,6 +49,7 @@ private fun NavGraphBuilder.homeScreen(
     navController: NavHostController
 ) = composable(route = ScreenRouteType.Home.route) {
     HomeScreen(
+        modifier = Modifier.fillMaxSize(),
         navToAddEditCustomerScreen = { customerId ->
             navController.navigate(
                 route = ScreenRouteType.AddEditCustomer.routeArgs(customerId = customerId)
@@ -74,6 +75,7 @@ private fun NavGraphBuilder.addEditCustomerScreen(
     )
 ) {
     AddEditCustomerScreen(
+        modifier = Modifier.fillMaxSize(),
         navBackToHomeScreen = {
             navController.popBackStack()
         }
@@ -86,6 +88,7 @@ private fun NavGraphBuilder.settingsScreen(
     route = ScreenRouteType.Settings.route
 ) {
     SettingsScreen(
+        modifier = Modifier.fillMaxSize(),
         navBackToHomeScreen = {
             navController.popBackStack()
         }
