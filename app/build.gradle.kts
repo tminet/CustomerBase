@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
 }
@@ -76,10 +75,10 @@ dependencies {
     implementation(libs.lifecycle.viewmodelCompose)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.androidCompiler)
+    ksp(libs.hilt.androidCompiler)
 
     implementation(libs.hilt.extCompose)
-    kapt(libs.hilt.extCompiler)
+    ksp(libs.hilt.extCompiler)
 
     implementation(libs.coroutines.android)
 
